@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './style.css';
 
-const citiesList = [
-  { name: 'Praha', code: 'CZ-PRG' },
-  { name: 'Brno', code: 'CZ-BRQ' },
+const testDates = [
+  {
+    dateBasic: '28.05.2021',
+    dateCs: 'pá 28. květen 2021',
+  },
+  {
+    dateBasic: '29.05.2021',
+    dateCs: 'so 29. květen 2021',
+  },
 ];
 
 export const JourneyPicker = ({ onJourneyChange }) => {
@@ -11,6 +17,7 @@ export const JourneyPicker = ({ onJourneyChange }) => {
   const [toCity, setToCity] = useState('');
   const [date, setDate] = useState('');
   const [cities, setCities] = useState([]);
+  const [dates, setDates] = useState([]);
 
   useEffect(() => {
     const fetchCitiesList = async () => {
@@ -21,7 +28,16 @@ export const JourneyPicker = ({ onJourneyChange }) => {
       setCities(data.results);
     };
 
+    const fetchDatesList = async () => {
+      const response = await fetch(
+        'https://apps.kodim.cz/daweb/leviexpress/api/dates',
+      );
+      const data = await response.json();
+      setDates(data.results);
+    };
+
     fetchCitiesList();
+    fetchDatesList();
   }, []);
 
   const handleSubmit = (event) => {
@@ -66,12 +82,7 @@ export const JourneyPicker = ({ onJourneyChange }) => {
                 setDate(event.target.value);
               }}
             >
-              <option value="">Vyberte</option>
-              <option value="datum01">Datum 01</option>
-              <option value="datum02">Datum 02</option>
-              <option value="datum03">Datum 03</option>
-              <option value="datum04">Datum 04</option>
-              <option value="datum05">Datum 05</option>
+              <DatesOptions dates={dates} />
             </select>
           </label>
           <div className="journey-picker__controls">
@@ -95,6 +106,21 @@ const CityOptions = ({ cities }) => {
       return (
         <option key={city.code} value={city.code}>
           {city.name}
+        </option>
+      );
+    }),
+  ];
+};
+
+const DatesOptions = ({ dates }) => {
+  return [
+    <option key="" value="">
+      Vyberte
+    </option>,
+    dates.map((date) => {
+      return (
+        <option key={date.dateBasic} value={date.dateBasic}>
+          {date.dateCs}
         </option>
       );
     }),
