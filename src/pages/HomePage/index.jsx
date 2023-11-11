@@ -3,18 +3,19 @@ import { JourneyPicker } from '../../components/JourneyPicker';
 import { JourneyDetail } from '../../components/JourneyDetail';
 import { useNavigate } from 'react-router-dom';
 import { SeatPicker } from '../../components/SeatPicker';
+import './style.css';
 
 export const HomePage = () => {
   const navigate = useNavigate();
   const [journey, setJourney] = useState(null);
+  const [userSeat, setUserSeat] = useState(null);
 
   const handleJourneyChange = (journey) => {
-    console.log(journey);
     setJourney(journey);
+    setUserSeat(journey.autoSeat);
   };
 
   const handleBuy = async () => {
-    console.log('Funguju!');
     const response = await fetch(
       'https://apps.kodim.cz/daweb/leviexpress/api/reservation',
       {
@@ -24,14 +25,13 @@ export const HomePage = () => {
         },
         body: JSON.stringify({
           action: 'create',
-          seat: journey.autoSeat,
+          seat: userSeat,
           journeyId: journey.journeyId,
         }),
       },
     );
 
     const data = await response.json();
-    console.log(data.results.reservationId);
     navigate(`/reservation/${data.results.reservationId}`);
   };
 
@@ -43,14 +43,17 @@ export const HomePage = () => {
         <SeatPicker
           seats={journey.seats}
           journeyId={journey.journeyId}
-          selectedSeat={journey.autoSeat}
+          selectedSeat={userSeat}
+          onSeatSelected={setUserSeat}
         />
       ) : null}
-      <div className="controls container">
-        <button onClick={handleBuy} className="btn btn--big" type="button">
-          Rezervovat
-        </button>
-      </div>
+      {journey !== null ? (
+        <div className="controls container">
+          <button onClick={handleBuy} className="btn btn--big" type="button">
+            Rezervovat
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 };
