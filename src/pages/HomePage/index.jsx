@@ -3,7 +3,6 @@ import { JourneyPicker } from '../../components/JourneyPicker';
 import { JourneyDetail } from '../../components/JourneyDetail';
 import { useNavigate } from 'react-router-dom';
 import { SeatPicker } from '../../components/SeatPicker';
-import './style.css';
 
 export const HomePage = () => {
   const navigate = useNavigate();
