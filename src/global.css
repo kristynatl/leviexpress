@@ -68,3 +68,8 @@ select:focus {
   background-color: lightgray;
   cursor: initial;
 }
+
+.controls {
+  padding: 0 2rem;
+  text-align: center;
+}
